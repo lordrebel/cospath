@@ -40,10 +40,19 @@ namespace cospath {
 		if (is_exist(path)) {
 			return COS_STATUS::IS_EX;
 		}
-		bool flag = bfs::create_directories(path);
+		boost::system::error_code code;
+		bool flag = bfs::create_directories(path,code);
+		
 		if (!flag) {
-			bool flag = bfs::create_directory(path);
+			if (OUT_ERRORS) {
+				cerr << "error when creating: " << path << " " << code.message() << std::endl;
+			}
+			bool flag = bfs::create_directory(path,code);
+			
 			if (!flag) {
+				if (OUT_ERRORS) {
+					cerr << "error when creating: " << path << " " << code.message() << std::endl;
+				}
 				return COS_STATUS::FAIL;
 			}
 			else {
@@ -76,7 +85,7 @@ namespace cospath {
 	{
 		auto start = src.find_last_of(".");
 		if (start != src.size()) {
-			res = src.substr(start);
+			res = src.substr(start+1);
 		}else{
 			res = "";
 			}

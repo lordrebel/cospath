@@ -13,13 +13,21 @@ int main()
 	string current_path;
 	os::cwd(current_path);
 	std::cout << "current dir:" << current_path << endl;
-	std::string dirname,filename,filename_stem,extension_str;
+	std::string dirname,filename,filename_stem,extension_str,sep;
 	os::dirname(current_path, dirname);
 	os::filename(current_path, filename);
 	os::stem(current_path, filename_stem);
+	os::extension(current_path + ".bbt", extension_str);
+	os::get_sep(sep);
 	std::cout << "current dir parent:" <<dirname  << endl;
 	std::cout << "current filename:" << filename << endl;
+	std::cout << "current sep:" <<  sep<< endl;
 	std::cout << "current filename_stem:" << filename_stem << endl;
+
+	std::cout << "current extension:" << extension_str << endl;
+	auto status=os::mkdir(current_path + "/test/aaa/bsc");
+	bool flag = (status == os::COS_STATUS::SUCCESS) ? true : false;
+	std::cout << "mkdir:" << current_path + "/test/aaa/bsc"<<" status:"<<flag<< endl;
 	std::cin.get();
 	return 0;
 }
