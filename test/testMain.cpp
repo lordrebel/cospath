@@ -23,11 +23,17 @@ int main()
 	std::cout << "current filename:" << filename << endl;
 	std::cout << "current sep:" <<  sep<< endl;
 	std::cout << "current filename_stem:" << filename_stem << endl;
-
+	vector<string> list;
+	cospath::list_dir(current_path, list);
+	std::cout << "listdir:" << endl;
+	for (auto a : list) {
+		cout << a << endl;
+	}
 	std::cout << "current extension:" << extension_str << endl;
 	auto status=os::mkdir(current_path + "/test/aaa/bsc");
 	bool flag = (status == os::COS_STATUS::SUCCESS) ? true : false;
 	std::cout << "mkdir:" << current_path + "/test/aaa/bsc"<<" status:"<<flag<< endl;
+	std::cout <<"join:"<< cospath::join({ "aa", "ert", "dedee"});
 	std::cin.get();
 	return 0;
 }

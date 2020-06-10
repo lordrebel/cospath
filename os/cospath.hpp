@@ -18,9 +18,8 @@ namespace cospath {
 	COS_STATUS list_dir_subfile(const std::string& path, std::vector<std::string>& path_list);
 	COS_STATUS list_dir_subdir(const std::string& path, std::vector<std::string>& path_list);
 	COS_STATUS list_dir_recursive(const std::string& path, std::vector<std::string>& path_list);
-	COS_STATUS glob(const std::string& path, const std::string& extension, std::vector<std::string>& res);
+	COS_STATUS glob(const std::string& path, const std::string& pattern, std::vector<std::string>& res);
 	COS_STATUS glob_recursive(const std::string& path, const std::string& extension, std::vector<std::string>& res);
-	template<class T> std::string join(std::initializer_list<T> alist);
 	
 	COS_STATUS mv(const std::string& src, const std::string& dst);
 	COS_STATUS cp(const std::string& src, const std::string& dst);
@@ -37,6 +36,18 @@ namespace cospath {
 	COS_STATUS filename(const std::string& src, std::string& res);
 	COS_STATUS stem(const std::string& src, std::string& res);
 	COS_STATUS extension(const std::string& src, std::string& res);
+
+	template<class T>
+	std::string join(std::initializer_list<T> alist)
+	{
+		std::string res("");
+		std::string sep;
+		cospath::get_sep(sep);
+		for (auto a : alist) {
+			res += (sep + a);
+		}
+		return res;
+	};
 	
 
 }

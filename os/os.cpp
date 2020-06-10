@@ -2,7 +2,7 @@
 #include<boost/filesystem.hpp>
 #include<iostream>
 
-#ifdef OUT_ERRORS
+#ifdef VERBOSE_ERRORS
 const bool OUT_ERRORS = true;
 #else
 const bool OUT_ERRORS = false;
@@ -16,11 +16,7 @@ namespace cospath {
 		return bfs::is_regular_file(bfs::path(path));
 	
 	}
-	template<class T>
-	std::string join(std::initializer_list<T> alist)
-	{
-		return std::string();
-	}
+	
 	bool is_dir(const std::string& path){
 
 		return bfs::is_directory(path);
@@ -89,6 +85,73 @@ namespace cospath {
 		}else{
 			res = "";
 			}
+		return COS_STATUS::SUCCESS;
+	}
+	COS_STATUS list_dir(const std::string& path, std::vector<std::string>& path_list)
+	{
+
+		try {
+			path_list.clear();
+			bfs::path p(path);
+			bfs::directory_iterator i(p);
+			for (; i != bfs::directory_iterator(); i++) {
+				path_list.emplace_back(i->path().string());
+			}
+			return COS_STATUS::SUCCESS;
+		}
+		catch (exception& err) {
+			if (OUT_ERRORS) {
+				cout << "err in:" << __FILE__ << " at:" << __LINE__ << " --->" << err.what() << endl;
+			}
+			return COS_STATUS::FAIL;
+		}
+	}
+	COS_STATUS list_dir_subfile(const std::string& path, std::vector<std::string>& path_list)
+	{
+		vector<string>res;
+		cospath::list_dir(path, res);
+		path_list.clear();
+		for (auto item : res) {
+			if ((!cospath::is_dir(item)) && cospath::is_exist(item)) {
+				path_list.emplace_back(item);
+			}
+		}
+
+		return COS_STATUS::SUCCESS;
+	}
+	COS_STATUS list_dir_subdir(const std::string& path, std::vector<std::string>& path_list)
+	{
+		vector<string>res;
+		cospath::list_dir(path, res);
+		path_list.clear();
+		for (auto item : res) {
+			if ((cospath::is_dir(item)) && cospath::is_exist(item)) {
+				path_list.emplace_back(item);
+			}
+		}
+
+		return COS_STATUS::SUCCESS;
+	}
+	COS_STATUS list_dir_recursive(const std::string& path, std::vector<std::string>& path_list)
+	{
+		auto full_path = bfs::path(path);
+		if (bfs::exists(full_path))
+		{
+			bfs::directory_iterator item_begin(full_path);
+			bfs::directory_iterator item_end;
+			for (; item_begin != item_end; item_begin++)
+			{
+				path_list.emplace_back(item_begin->path().string());
+				if (bfs::is_directory(*item_begin))
+				{
+					list_dir_recursive(item_begin->path().string(),path_list);
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
 		return COS_STATUS::SUCCESS;
 	}
 	COS_STATUS mv(const std::string& src, const std::string& dst)
