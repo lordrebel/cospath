@@ -29,6 +29,12 @@ int main()
 	for (auto a : list) {
 		cout << a << endl;
 	}
+	list.clear();
+	cospath::list_dir_recursive(current_path, list);
+	std::cout << "listdir_recursive:" << endl;
+	for (auto a : list) {
+		cout << a << endl;
+	}
 	std::cout << "current extension:" << extension_str << endl;
 	auto status=os::mkdir(current_path + "/test/aaa/bsc");
 	bool flag = (status == os::COS_STATUS::SUCCESS) ? true : false;

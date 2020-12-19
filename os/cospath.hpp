@@ -13,16 +13,27 @@ namespace cospath {
 		IS_DIR,
 
 	} COS_STATUS;
-
+	//list current dir
 	COS_STATUS list_dir(const std::string& path,std::vector<std::string>&path_list);
+	//list only file in current dir
 	COS_STATUS list_dir_subfile(const std::string& path, std::vector<std::string>& path_list);
+	//list only folder in current dir
 	COS_STATUS list_dir_subdir(const std::string& path, std::vector<std::string>& path_list);
+	//list current dir recursively
 	COS_STATUS list_dir_recursive(const std::string& path, std::vector<std::string>& path_list);
+	//find thefilename cantain the partten in current dir
 	COS_STATUS glob(const std::string& path, const std::string& pattern, std::vector<std::string>& res);
+	//find thefilename cantain the partten in current dir
 	COS_STATUS glob_recursive(const std::string& path, const std::string& extension, std::vector<std::string>& res);
 	
+	//move file or path
 	COS_STATUS mv(const std::string& src, const std::string& dst);
+	//copy file or path
 	COS_STATUS cp(const std::string& src, const std::string& dst);
+	//rm current file or path
+	COS_STATUS rm(const std::string& path);
+	COS_STATUS fileSize(const std::string& path,size_t &size);
+
 
 	bool is_file(const std::string& path);
 	bool is_dir(const std::string& path);

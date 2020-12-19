@@ -154,6 +154,61 @@ namespace cospath {
 		}
 		return COS_STATUS::SUCCESS;
 	}
+	
+	COS_STATUS glob(const std::string& path, const std::string& pattern, std::vector<std::string>& res){
+			std::vector<std::string> tmp;
+			list_dir(path,tmp);
+			res.clear();
+			for(auto & path:tmp){
+				std::string filename;
+				cospath::filename(path,filename);
+				if(filename.find(pattern)!=std::string::npos){
+					res.emplace_back(path);
+				}
+			}
+			return COS_STATUS::SUCCESS;
+	}
+
+	COS_STATUS glob_recursive(const std::string& path, const std::string& extension, std::vector<std::string>& res){
+			std::vector<std::string> tmp;
+			list_dir_recursive(path,tmp);
+			res.clear();
+			for(auto & path:tmp){
+				std::string filename;
+				cospath::filename(path,filename);
+				if(filename.find(extension)!=std::string::npos){
+					res.emplace_back(path);
+				}
+			}
+			return COS_STATUS::SUCCESS;
+	}
+
+	COS_STATUS fileSize(const std::string& path,size_t &size){
+		if(cospath::is_file(path)){
+			size=bfs::file_size(path);
+			return COS_STATUS::SUCCESS;
+		}else{
+			if(cospath::is_exist(path))
+				return COS_STATUS::IS_DIR;
+			else
+				return COS_STATUS::NOT_EX;
+		}
+	}
+	
+	COS_STATUS rm(const std::string& src){
+		if(cospath::is_exist(src)){
+			try{
+				bfs::remove_all(src);
+			}catch(exception & err){
+				if(OUT_ERRORS){
+					cerr << err.what()<<endl;
+				}
+				return COS_STATUS::FAIL;
+			}
+		}
+		return COS_STATUS::SUCCESS;
+	}
+
 	COS_STATUS mv(const std::string& src, const std::string& dst)
 	{
 		
@@ -161,13 +216,14 @@ namespace cospath {
 			bfs::rename(src, dst);
 			return COS_STATUS::SUCCESS;
 		}
-		catch (exception err) {
+		catch (exception& err) {
 			if (OUT_ERRORS) {
 				cerr << err.what()<<endl;
 			}
 			return COS_STATUS::FAIL;
 		};
 	}
+
 	COS_STATUS cp(const std::string& src, const std::string& dst)
 	{
 		if (!boost::filesystem::exists(dst))
@@ -198,12 +254,10 @@ namespace cospath {
 		}
 		return COS_STATUS::SUCCESS;
 	}
+
 	COS_STATUS get_sep(std::string& res)
 	{
 		res = bfs::path::preferred_separator;
 		return COS_STATUS::SUCCESS;
 	}
-
-
-
 }
